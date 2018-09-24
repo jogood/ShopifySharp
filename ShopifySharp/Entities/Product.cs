@@ -90,7 +90,7 @@ namespace ShopifySharp
         /// To reorder variants, update the product with the variants in the desired order.The position attribute on the variant will be ignored.
         /// </summary>
         [JsonProperty("variants")]
-        public IEnumerable<ProductVariant> Variants { get; set; }
+        public IEnumerable<InventoryLevel> Variants { get; set; }
 
         /// <summary>
         /// Custom product property names like "Size", "Color", and "Material".

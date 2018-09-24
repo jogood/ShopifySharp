@@ -34,7 +34,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="productId">The product that the variants belong to.</param>
         /// <param name="filterOptions">Options for filtering the result.</param>
-        public virtual async Task<IEnumerable<ProductVariant>> ListAsync(long productId, ListFilter filterOptions = null)
+        public virtual async Task<IEnumerable<InventoryLevel>> ListAsync(long productId, ListFilter filterOptions = null)
         {
             var req = PrepareRequest($"products/{productId}/variants.json");
 
@@ -43,26 +43,26 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(filterOptions.ToParameters());
             }
 
-            return await ExecuteRequestAsync<List<ProductVariant>>(req, HttpMethod.Get, rootElement: "variants");
+            return await ExecuteRequestAsync<List<InventoryLevel>>(req, HttpMethod.Get, rootElement: "variants");
         }
 
         /// <summary>
-        /// Retrieves the <see cref="ProductVariant"/> with the given id.
+        /// Retrieves the <see cref="InventoryLevel"/> with the given id.
         /// </summary>
         /// <param name="variantId">The id of the product variant to retrieve.</param>
-        public virtual async Task<ProductVariant> GetAsync(long variantId)
+        public virtual async Task<InventoryLevel> GetAsync(long variantId)
         {
             var req = PrepareRequest($"variants/{variantId}.json");
 
-            return await ExecuteRequestAsync<ProductVariant>(req, HttpMethod.Get, rootElement: "variant");
+            return await ExecuteRequestAsync<InventoryLevel>(req, HttpMethod.Get, rootElement: "variant");
         }
 
         /// <summary>
-        /// Creates a new <see cref="ProductVariant"/>.
+        /// Creates a new <see cref="InventoryLevel"/>.
         /// </summary>
         /// <param name="productId">The product that the new variant will belong to.</param>
-        /// <param name="variant">A new <see cref="ProductVariant"/>. Id should be set to null.</param>
-        public virtual async Task<ProductVariant> CreateAsync(long productId, ProductVariant variant)
+        /// <param name="variant">A new <see cref="InventoryLevel"/>. Id should be set to null.</param>
+        public virtual async Task<InventoryLevel> CreateAsync(long productId, InventoryLevel variant)
         {
             var req = PrepareRequest($"products/{productId}/variants.json");
             var content = new JsonContent(new
@@ -70,15 +70,15 @@ namespace ShopifySharp
                 variant = variant
             });
 
-            return await ExecuteRequestAsync<ProductVariant>(req, HttpMethod.Post, content, "variant");
+            return await ExecuteRequestAsync<InventoryLevel>(req, HttpMethod.Post, content, "variant");
         }
 
         /// <summary>
-        /// Updates the given <see cref="ProductVariant"/>.
+        /// Updates the given <see cref="InventoryLevel"/>.
         /// </summary>
         /// <param name="productVariantId">Id of the object being updated.</param>
         /// <param name="variant">The variant to update.</param>
-        public virtual async Task<ProductVariant> UpdateAsync<T>(T productVariantId, ProductVariant variant)
+        public virtual async Task<InventoryLevel> UpdateAsync<T>(T productVariantId, InventoryLevel variant)
         {
             var req = PrepareRequest($"variants/{productVariantId}.json");
             var content = new JsonContent(new
@@ -86,7 +86,7 @@ namespace ShopifySharp
                 variant = variant
             });
 
-            return await ExecuteRequestAsync<ProductVariant>(req, HttpMethod.Put, content, "variant");
+            return await ExecuteRequestAsync<InventoryLevel>(req, HttpMethod.Put, content, "variant");
         }
 
         /// <summary>
