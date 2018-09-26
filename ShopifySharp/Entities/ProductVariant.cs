@@ -164,8 +164,8 @@ namespace ShopifySharp
         public string WeightUnit { get; set; }
 
         /// <summary>
-        /// Additional metadata about the <see cref="InventoryLevel"/>. Note: This is not naturally returned with a <see cref="InventoryLevel"/> response, as
-        /// Shopify will not return <see cref="InventoryLevel"/> metafields unless specified. Instead, you need to query metafields with <see cref="MetaFieldService"/>. 
+        /// Additional metadata about the <see cref="ProductVariant"/>. Note: This is not naturally returned with a <see cref="ProductVariant"/> response, as
+        /// Shopify will not return <see cref="ProductVariant"/> metafields unless specified. Instead, you need to query metafields with <see cref="MetaFieldService"/>. 
         /// Uses include: Creating, updating, & deserializing webhook bodies that include them.
         /// </summary>
         [JsonProperty("metafields")]

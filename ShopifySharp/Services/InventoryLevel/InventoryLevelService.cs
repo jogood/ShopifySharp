@@ -9,8 +9,8 @@ namespace ShopifySharp
     /// <summary>
     /// A service for manipulating a Shopify inventory items.
     /// </summary>
-    public class InventoryLevelService : ShopifyService
-    {
+    public class InventoryLevelService : ShopifyServiceT<InventoryLevel, InventoryLevelFilter>
+    { 
         /// <summary>
         /// Creates a new instance of <see cref="InventoryLevelService" />.
         /// </summary>
@@ -22,7 +22,7 @@ namespace ShopifySharp
         /// Gets a list of inventory items
         /// </summary>
         /// <param name="filterOptions">Options for filtering the result. InventoryItemIds and/or LocationIds must be populated.</param>
-        public virtual async Task<IEnumerable<InventoryLevel>> ListAsync(InventoryLevelFilter filterOptions)
+        public override async Task<IEnumerable<InventoryLevel>> ListAsync(InventoryLevelFilter filterOptions)
         {
             var req = PrepareRequest($"inventory_levels.json");
 
@@ -55,6 +55,20 @@ namespace ShopifySharp
             var req = PrepareRequest($"inventory_levels/set.json");
             var body = updatedInventoryLevel.ToDictionary();
             body.Add("disconnect_if_necessary", disconnectIfNecessary);
+            JsonContent content = new JsonContent(body);
+            return await ExecuteRequestAsync<InventoryLevel>(req, HttpMethod.Post, content, "inventory_level");
+        }
+
+        /// <summary>
+        /// Updates the given <see cref="InventoryLevel"/>.
+        /// </summary>
+        /// <param name="updatedInventoryLevel">The updated <see cref="InventoryLevel"/></param>
+        /// <param name="disconnectIfNecessary">Whether inventory for any previously connected locations will be set to 0 and the locations disconnected. This property is ignored when no fulfillment service is involved.</param>
+        /// <returns>The updated <see cref="InventoryLevel"/></returns>
+        public override async Task<InventoryLevel> UpdateAsync(long VariantId, InventoryLevel updatedInventoryLevel)
+        {
+            var req = PrepareRequest($"inventory_levels/set.json");
+            var body = updatedInventoryLevel.ToDictionary();
             JsonContent content = new JsonContent(body);
             return await ExecuteRequestAsync<InventoryLevel>(req, HttpMethod.Post, content, "inventory_level");
         }

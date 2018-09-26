@@ -6,13 +6,13 @@ using ShopifySharp.Converters;
 
 namespace ShopifySharp
 {
-    public class InventoryLevel : ProductVariant
+    public class InventoryLevel : ShopifyObject
     {
         /// <summary>
         /// The unique identifier of the inventory item that the inventory level belongs to.
         /// </summary>
-        //[JsonProperty("inventory_item_id")]
-        //public long? InventoryItemId { get; set; }
+        [JsonProperty("inventory_item_id")]
+        public long? InventoryItemId { get; set; }
 
         /// <summary>
         /// The unique identifier of the location that the inventory level belongs to.

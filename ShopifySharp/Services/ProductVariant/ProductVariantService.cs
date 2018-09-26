@@ -9,7 +9,7 @@ namespace ShopifySharp
     /// <summary>
     /// A service for manipulating a Shopify product's variants.
     /// </summary>
-    public class ProductVariantService : ShopifyService
+    public class ProductVariantService : ShopifyServiceT<ProductVariant, ListFilter>
     {
         /// <summary>
         /// Creates a new instance of <see cref="ProductVariantService" />.
@@ -34,7 +34,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="productId">The product that the variants belong to.</param>
         /// <param name="filterOptions">Options for filtering the result.</param>
-        public virtual async Task<IEnumerable<ProductVariant>> ListAsync(long productId, ListFilter filterOptions = null)
+        public override async Task<IEnumerable<ProductVariant>> ListAsync(long productId, ListFilter filterOptions = null)
         {
             var req = PrepareRequest($"products/{productId}/variants.json");
 
@@ -78,7 +78,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="productVariantId">Id of the object being updated.</param>
         /// <param name="variant">The variant to update.</param>
-        public virtual async Task<ProductVariant> UpdateAsync<T>(T productVariantId, ProductVariant variant)
+        public override async Task<ProductVariant> UpdateAsync<T>(T productVariantId, ProductVariant variant)
         {
             var req = PrepareRequest($"variants/{productVariantId}.json");
             var content = new JsonContent(new
