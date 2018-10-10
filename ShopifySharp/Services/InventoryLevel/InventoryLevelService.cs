@@ -9,7 +9,7 @@ namespace ShopifySharp
     /// <summary>
     /// A service for manipulating a Shopify inventory items.
     /// </summary>
-    public class InventoryLevelService : ShopifyServiceT<InventoryLevel, InventoryLevelFilter>
+    public class InventoryLevelService : ShopifyService//T<InventoryLevel, InventoryLevelFilter>
     { 
         /// <summary>
         /// Creates a new instance of <see cref="InventoryLevelService" />.
@@ -22,7 +22,7 @@ namespace ShopifySharp
         /// Gets a list of inventory items
         /// </summary>
         /// <param name="filterOptions">Options for filtering the result. InventoryItemIds and/or LocationIds must be populated.</param>
-        public override async Task<IEnumerable<InventoryLevel>> ListAsync(InventoryLevelFilter filterOptions)
+        public virtual async Task<IEnumerable<InventoryLevel>> ListAsync(InventoryLevelFilter filterOptions)
         {
             var req = PrepareRequest($"inventory_levels.json");
 
@@ -33,6 +33,22 @@ namespace ShopifySharp
 
             return await ExecuteRequestAsync<List<InventoryLevel>>(req, HttpMethod.Get, rootElement: "inventory_levels");
         }
+        /*
+        /// <summary>
+        /// Gets a list of inventory items
+        /// </summary>
+        /// <param name="filterOptions">Options for filtering the result. InventoryItemIds and/or LocationIds must be populated.</param>
+        public override async Task<IEnumerable<InventoryLevel>> ListAsync(long id, InventoryLevelFilter filterOptions)
+        {
+            var req = PrepareRequest($"inventory_levels.json");
+
+            if (filterOptions != null)
+            {
+                req.QueryParams.AddRange(filterOptions.ToParameters());
+            }
+
+            return await ExecuteRequestAsync<List<InventoryLevel>>(req, HttpMethod.Get, rootElement: "inventory_levels");
+        }*/
 
         /// <summary>
         /// Deletes inventory for an item at specified location.  All items must keep inventory at at least one location.
@@ -58,7 +74,7 @@ namespace ShopifySharp
             JsonContent content = new JsonContent(body);
             return await ExecuteRequestAsync<InventoryLevel>(req, HttpMethod.Post, content, "inventory_level");
         }
-
+        /*
         /// <summary>
         /// Updates the given <see cref="InventoryLevel"/>.
         /// </summary>
@@ -71,7 +87,7 @@ namespace ShopifySharp
             var body = updatedInventoryLevel.ToDictionary();
             JsonContent content = new JsonContent(body);
             return await ExecuteRequestAsync<InventoryLevel>(req, HttpMethod.Post, content, "inventory_level");
-        }
+        }*/
 
         /// <summary>
         /// Connect an inventory item to a location

@@ -9,7 +9,7 @@ namespace ShopifySharp
     /// <summary>
     /// A service for manipulating a Shopify product's variants.
     /// </summary>
-    public class ProductVariantService : ShopifyServiceT<ProductVariant, ListFilter>
+    public class ProductVariantService : ShopifyService//T<ProductVariant, ListFilter>
     {
         /// <summary>
         /// Creates a new instance of <see cref="ProductVariantService" />.
@@ -45,6 +45,24 @@ namespace ShopifySharp
 
             return await ExecuteRequestAsync<List<ProductVariant>>(req, HttpMethod.Get, rootElement: "variants");
         }
+        /*
+        /// <summary>
+        /// Gets a list of variants belonging to the given product.
+        /// </summary>
+        /// <param name="productId">The product that the variants belong to.</param>
+        /// <param name="filterOptions">Options for filtering the result.</param>
+        public override async Task<IEnumerable<ProductVariant>> ListAsync(long productId, ListFilter filterOptions = null)
+        {
+            var req = PrepareRequest($"products/{productId}/variants.json");
+
+            if (filterOptions != null)
+            {
+                req.QueryParams.AddRange(filterOptions.ToParameters());
+            }
+
+            return await ExecuteRequestAsync<List<ProductVariant>>(req, HttpMethod.Get, rootElement: "variants");
+        }
+        */
 
         /// <summary>
         /// Retrieves the <see cref="ProductVariant"/> with the given id.

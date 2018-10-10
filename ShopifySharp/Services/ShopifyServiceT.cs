@@ -338,7 +338,7 @@ namespace ShopifySharp
         /// Gets a list of inventory items
         /// </summary>
         /// <param name="filterOptions">Options for filtering the result. InventoryItemIds and/or LocationIds must be populated.</param>
-        public virtual async Task<IEnumerable<T>> ListAsync(F filterOptions)
+        public virtual async Task<IEnumerable<T>> ListAsync(long id, F filterOptions)
         {
             throw new NotImplementedException();
         }
