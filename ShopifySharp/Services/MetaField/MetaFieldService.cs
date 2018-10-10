@@ -10,7 +10,7 @@ namespace ShopifySharp
     /// <summary>
     /// A service for manipulating Shopify metafields.
     /// </summary>
-    public class MetaFieldService : ShopifyServiceT<MetaField, MetaFieldFilter>
+    public class MetaFieldService : ShopifyService
     {
         /// <summary>
         /// Creates a new instance of <see cref="MetaFieldService" />.

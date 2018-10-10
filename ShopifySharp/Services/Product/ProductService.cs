@@ -132,7 +132,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="id">The product's id.</param>
         /// <returns>The published <see cref="Product"/></returns>
-        public virtual async Task<Product> PublishAsync(long? id)
+        public virtual async Task<Product> PublishAsync(long id)
         {
             var req = PrepareRequest($"products/{id}.json");
             var content = new JsonContent(new
@@ -152,7 +152,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="id">The product's id.</param>
         /// <returns>The unpublished <see cref="Product"/></returns>
-        public virtual async Task<Product> UnpublishAsync(long? id)
+        public virtual async Task<Product> UnpublishAsync(long id)
         {
             var req = PrepareRequest($"products/{id}.json");
             var content = new JsonContent(new
