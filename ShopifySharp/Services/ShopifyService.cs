@@ -14,7 +14,7 @@ namespace ShopifySharp
 {
     public abstract class ShopifyService
     {
-        private static IRequestExecutionPolicy _GlobalExecutionPolicy = new DefaultRequestExecutionPolicy();
+        private static IRequestExecutionPolicy _GlobalExecutionPolicy =  new RetryExecutionPolicy();//= new DefaultRequestExecutionPolicy();
 
         private static JsonSerializer _Serializer = new JsonSerializer { DateParseHandling = DateParseHandling.DateTimeOffset };
 
