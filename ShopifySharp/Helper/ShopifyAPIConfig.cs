@@ -32,5 +32,21 @@ namespace ShopifySharp
         {
             return (S)Activator.CreateInstance(typeof(S), new object[] { BaseUrl, password });
         }
+
+        /// <summary>
+        /// Make service without creating a <see cref="ShopifyAPIConfig"/> instance.
+        /// </summary>
+        /// <typeparam name="S"></typeparam>
+        /// <param name="APIConfigFile"></param>
+        /// <returns></returns>
+        public static S MakeService<S>(string APIConfigFile)
+        {
+            string[] config = File.ReadAllLines(APIConfigFile);
+            string apikey = config[0];
+            string password = config[1];
+            string shopname = config[2];
+            string baseurl = "https://" + apikey + ":" + password + "@" + shopname;
+            return (S)Activator.CreateInstance(typeof(S), new object[] { baseurl, password });
+        }
     }
 }
