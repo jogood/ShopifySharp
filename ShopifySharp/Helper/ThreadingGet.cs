@@ -23,6 +23,7 @@ namespace ShopifySharp.Helper
         }
     }
 
+
     public static class ThreadingGet
     {
         public static ProductService getProductService;
@@ -32,6 +33,11 @@ namespace ShopifySharp.Helper
         /// </summary>
         public static int limit = 250;
 
+        static public void Testtt()
+        {
+            GeneralAdapter.OuputString("jijijokokokm");
+        }
+
         public static void InitServices(string getProductAPIFile = null, string getVariantsAPIfile = null)
         {
             if(getProductAPIFile != null) getProductService = ShopifyAPIConfig.MakeService<ProductService>(getProductAPIFile);
@@ -40,8 +46,8 @@ namespace ShopifySharp.Helper
 
 
         
-        static ConcurrentQueue<Product> productQueue = new ConcurrentQueue<Product>();
-        static volatile bool productDone = false;
+        public static ConcurrentQueue<Product> productQueue = new ConcurrentQueue<Product>();
+        public static volatile bool productDone = false;
         public static void GetProductThread()
         {
             int total = Task.Run(() => { return getProductService.CountAsync(); }).Result;
@@ -56,6 +62,33 @@ namespace ShopifySharp.Helper
                 productQueue.AddRange(Task.Run(() => { return getProductService.ListAsync(pf); }).Result);
             }
             productDone = true;
+            GeneralAdapter.OuputString("GetProductThread done.");
+        }
+
+        public static ConcurrentQueue<ProductVariant> variantQueue = new ConcurrentQueue<ProductVariant>();
+        public static volatile bool variantDone = false;
+        public static List<ProductVariant> variantList { get { if (variantDone) return variantList; else return null; } private set { variantList = value; } }
+        public static void GetVariantThread()
+        {
+            variantList = new List<ProductVariant>();
+            int iter = 0;
+            while (!productDone || productQueue.Count > 0)
+            {
+
+                Product p = null;
+                while (!productQueue.TryDequeue(out p))
+                {
+                    if (productDone && productQueue.Count == 0) break;
+                }
+                if (p != null)
+                {
+                    iter++;
+                    variantList.AddRange(Task.Run(() => { return getVariantService.ListAsync((long)p.Id); }).Result);
+                }
+
+            }
+            variantDone = true;
+            GeneralAdapter.OuputString("GetVariantThread Done.");
         }
 
     }
