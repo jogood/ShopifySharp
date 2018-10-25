@@ -20,6 +20,26 @@ namespace ShopifySharp
         /// and the <see cref="Address"/> Id set to 0.
         /// </remarks>
         [JsonProperty("id")]
+        public string IdString
+        {
+            get
+            {
+                return Id.ToString();
+            }
+            set
+            {
+                long x;
+                if (long.TryParse(value, out x))
+                {
+                    Id = x;
+                }
+                else
+                {
+                    Id = null;
+                }
+
+            }
+        }
         public long? Id { get; set; }
     }
 }

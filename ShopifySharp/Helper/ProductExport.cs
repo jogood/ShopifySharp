@@ -24,7 +24,7 @@ namespace ShopifySharp.Helper
     }
 
 
-    public static class ThreadingGet
+    public static class ProductExport
     {
         public static ProductService getProductService;
         public static ProductVariantService getVariantService;
@@ -32,11 +32,6 @@ namespace ShopifySharp.Helper
         /// Maximum 250
         /// </summary>
         public static int limit = 250;
-
-        static public void Testtt()
-        {
-            GeneralAdapter.OuputString("jijijokokokm");
-        }
 
         public static void InitServices(string getProductAPIFile = null, string getVariantsAPIfile = null)
         {
@@ -48,6 +43,9 @@ namespace ShopifySharp.Helper
         
         public static ConcurrentQueue<Product> productQueue = new ConcurrentQueue<Product>();
         public static volatile bool productDone = false;
+        /// <summary>
+        /// Thread versuib of Get product. Get ll products in Shopify
+        /// </summary>
         public static void GetProductThread()
         {
             int total = Task.Run(() => { return getProductService.CountAsync(); }).Result;
@@ -62,12 +60,35 @@ namespace ShopifySharp.Helper
                 productQueue.AddRange(Task.Run(() => { return getProductService.ListAsync(pf); }).Result);
             }
             productDone = true;
-            GeneralAdapter.OuputString("GetProductThread done.");
+            GeneralAdapter.OutputString("GetProductThread done.");
+        }
+        /// <summary>
+        /// Async Version of GetProduct. Get all products in Shopify
+        /// </summary>
+        public static async Task GetProductAsync()
+        {
+            int total = await getProductService.CountAsync();
+            int pages = (int)Math.Ceiling(total / (decimal)limit);
+            ProductFilter pf = new ProductFilter()
+            {
+                Limit = limit
+            };
+            for (int i = 1; i <= pages; i++)
+            {
+                pf.Page = i;
+                var result = await getProductService.ListAsync(pf);
+                productQueue.AddRange(result);
+            }
+            productDone = true;
+            GeneralAdapter.OutputString("GetProductThread done.");
         }
 
-        public static ConcurrentQueue<ProductVariant> variantQueue = new ConcurrentQueue<ProductVariant>();
+
         public static volatile bool variantDone = false;
-        public static List<ProductVariant> variantList { get { if (variantDone) return variantList; else return null; } private set { variantList = value; } }
+        public static List<ProductVariant> variantList;
+        /// <summary>
+        /// Get Variants from productQueue
+        /// </summary>
         public static void GetVariantThread()
         {
             variantList = new List<ProductVariant>();
@@ -76,19 +97,44 @@ namespace ShopifySharp.Helper
             {
 
                 Product p = null;
-                while (!productQueue.TryDequeue(out p))
+                if (productQueue.TryDequeue(out p))
                 {
-                    if (productDone && productQueue.Count == 0) break;
-                }
-                if (p != null)
-                {
-                    iter++;
-                    variantList.AddRange(Task.Run(() => { return getVariantService.ListAsync((long)p.Id); }).Result);
-                }
 
+                    if (p != null)
+                    {
+                        iter++;
+                        variantList.AddRange(Task.Run(() => { return getVariantService.ListAsync((long)p.Id); }).Result);
+                    }
+                }
             }
             variantDone = true;
-            GeneralAdapter.OuputString("GetVariantThread Done.");
+            GeneralAdapter.OutputString("GetVariantThread Done.");
+        }
+        /// <summary>
+        /// Get Variants from productQueue
+        /// </summary>
+        public static async Task GetVariantAsync()
+        {
+            variantList = new List<ProductVariant>();
+
+            while (!productDone || productQueue.Count > 0)
+            {
+                if(productQueue.Count == 0)
+                {
+                    await Task.Delay(500);
+                }
+                Product p = null;
+                if (productQueue.TryDequeue(out p))
+                {
+
+                    if (p != null)
+                    {
+                        variantList.AddRange(await getVariantService.ListAsync((long) p.Id));
+                    }
+                }
+            }
+            variantDone = true;
+            GeneralAdapter.OutputString("GetVariantThread Done.");
         }
 
     }

@@ -12,6 +12,26 @@ namespace ShopifySharp
         /// The unique identifier of the inventory item that the inventory level belongs to.
         /// </summary>
         [JsonProperty("inventory_item_id")]
+        public string InventoryItemIdString
+        {
+            get
+            {
+                return InventoryItemId.ToString();
+            }
+            set
+            {
+                long x;
+                if(long.TryParse(value, out x))
+                {
+                    InventoryItemId = x;
+                }
+                else
+                {
+                    InventoryItemId = null;
+                }
+
+            }
+        }
         public long? InventoryItemId { get; set; }
 
         /// <summary>
@@ -36,5 +56,12 @@ namespace ShopifySharp
             }
         }
         public int? Available { get; set; }
+
+        /// <summary>
+        /// A unique identifier for the product in the shop. (JB ADDED)
+        /// </summary>
+        [JsonProperty("sku")]
+        public string SKU { get; set; }
+
     }
 }
