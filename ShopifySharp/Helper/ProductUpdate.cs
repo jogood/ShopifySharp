@@ -15,13 +15,15 @@ namespace ShopifySharp.Helper
 
         public static InventoryLevelService updateInventoryService;
         public static ProductVariantService updateVariantService;
+        public static MetaFieldService updateMetafieldService;
 
 
 
-        public static void InitServices(string updateInventoryAPIFile = null, string updateVariantAPIfile = null)
+        public static void InitServices(string updateInventoryAPIFile = null, string updateVariantAPIfile = null, string updateMetafieldsAPIFile = null)
         {
             if (updateInventoryAPIFile != null) updateInventoryService = ShopifyAPIConfig.MakeService<InventoryLevelService>(updateInventoryAPIFile);
             if (updateVariantAPIfile != null) updateVariantService = ShopifyAPIConfig.MakeService<ProductVariantService>(updateVariantAPIfile);
+            if (updateMetafieldsAPIFile != null) updateMetafieldService = ShopifyAPIConfig.MakeService<MetaFieldService>(updateMetafieldsAPIFile);
         }
 
         public static ConcurrentQueue<ProductVariant> variantUpdateQueue = new ConcurrentQueue<ProductVariant>();
@@ -88,6 +90,7 @@ namespace ShopifySharp.Helper
                         else
                         {
                             //var result = await updateVariantService.UpdateAsync((long)p.Id, p));
+                            GeneralAdapter.OutputString(p.SKU + " Prix: " + p.Price + " Compare Var (rouge): " + p.CompareAtPrice);
                         }
                     }
                     catch
@@ -100,6 +103,52 @@ namespace ShopifySharp.Helper
             }
             variantUpdateDone = true;
             GeneralAdapter.OutputString("VariantUpdate Done.");
+        }
+
+        public static ConcurrentQueue<MetaField> metafieldUpdateQueue = new ConcurrentQueue<MetaField>();
+        public static volatile bool metafieldUpdateDone = false;
+
+        static public async Task UpdateMetafieldsAsync()
+        {
+            while (!AllGetQueueFilled || metafieldUpdateQueue.Count > 0)
+            {
+
+                if (metafieldUpdateQueue.Count == 0) await Task.Delay(500);
+
+                MetaField p = null;
+                // SQLDone can become true whithout adding anything to Queue
+                if (metafieldUpdateQueue.TryDequeue(out p))
+                {
+
+                    try
+                    {
+                        
+                        //var result = await updateMetafieldService.UpdateAsync((long)p.OwnerId, p);
+                        var result = await updateMetafieldService.CreateAsync(p);
+                        //GeneralAdapter.OutputString(result.ToString());
+                        
+                    }
+                    catch (Exception e)
+                    {
+                        /*
+                        try
+                        {*/
+                            GeneralAdapter.OutputString($"{e.Message}");
+                            /*
+                            var result = await updateMetafieldService.CreateAsync(p);
+                            GeneralAdapter.OutputString(result.ToString());*/
+                            /*
+                        }
+                        catch (Exception e2)
+                        {
+                            GeneralAdapter.OutputString(e2.Message);
+                        }*/
+                    }
+                }
+
+            }
+            metafieldUpdateDone = true;
+            GeneralAdapter.OutputString("metafieldUpdate Done.");
         }
 
         public static ConcurrentQueue<InventoryLevel> inventoryUpdateQueue = new ConcurrentQueue<InventoryLevel>();
